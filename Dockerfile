@@ -8,10 +8,10 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 WORKDIR /app
 
 # Copy dependency files
-COPY pyproject.toml uv.lock ./
+COPY pyproject.toml ./
 
 # Install dependencies with UV
-RUN uv sync --frozen --no-dev
+RUN uv lock && uv sync --frozen --no-dev --no-cache
 
 # Copy application code
 COPY ./app ./app
@@ -22,6 +22,10 @@ USER appuser
 
 # Expose port
 EXPOSE 8000
+
+# Health check natif Docker (compatible avec urllib.request)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+CMD python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()" || exit 1
 
 # Run the application using UV
 CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

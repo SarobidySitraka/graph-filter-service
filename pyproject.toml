@@ -5,7 +5,6 @@ description = "Advanced Neo4j graph filtering microservice"
 authors = [
     {name = "Sarobidy Sitraka", email = "sarobidysitraka01@duck.com"}
 ]
-readme = "README.md"
 requires-python = ">=3.11"
 
 dependencies = [
